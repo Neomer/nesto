@@ -7,6 +7,7 @@ using namespace nesto;
 int main()
 {
     ApplicationConfiguration cfg("app.config");
+    cfg.reload();
     nesto::log.open();
 
     cfg.save();

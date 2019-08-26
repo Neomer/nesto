@@ -6,7 +6,7 @@
 
 using namespace nesto;
 
-nlohmann::json JsonSerializable::toJson() const
+nlohmann::json JsonSerializable::toJsonObject() const
 {
     nlohmann::json ret;
     toJson(ret);

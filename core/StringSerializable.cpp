@@ -6,7 +6,7 @@
 
 using namespace nesto;
 
-std::string StringSerializable::toString() const
+std::string StringSerializable::toStringObject() const
 {
     std::string ret;
     toString(ret);

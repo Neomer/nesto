@@ -26,7 +26,7 @@ Configuration::~Configuration()
 void Configuration::save()
 {
     ofstream stream(_filename, ios::out);
-    stream << toJson();
+    stream << toJsonObject();
     stream.close();
 }
 

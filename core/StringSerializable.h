@@ -17,7 +17,7 @@ namespace nesto {
 
         virtual void toString(std::string &string) const = 0;
 
-        [[nodiscard]] std::string toString() const;
+        [[nodiscard]] std::string toStringObject() const;
 
         virtual void fromString(std::string_view string) = 0;
     };

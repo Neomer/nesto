@@ -15,7 +15,7 @@ namespace nesto {
         virtual ~JsonSerializable() = default;
 
         virtual void toJson(nlohmann::json &object) const = 0;
-        [[nodiscard]] nlohmann::json toJson() const;
+        [[nodiscard]] nlohmann::json toJsonObject() const;
 
         virtual void fromJson(const nlohmann::json &object) = 0;
     };
