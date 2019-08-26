@@ -32,7 +32,7 @@ Logger::Logger() :
 
 Logger::~Logger()
 {
-
+    close();
 }
 
 void Logger::open()
@@ -44,10 +44,12 @@ void Logger::open()
 
 void Logger::close()
 {
-    _run = false;
-    _waitMessages.notify_all();
-    if (_writeThread.joinable()) {
-        _writeThread.join();
+    if (_run.load()) {
+        _run = false;
+        _waitMessages.notify_all();
+        if (_writeThread.joinable()) {
+            _writeThread.join();
+        }
     }
 }
 
