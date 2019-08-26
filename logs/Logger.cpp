@@ -24,8 +24,7 @@ inline const char *logLevelToString(Logger::LogLevel level)
     }
 }
 
-Logger::Logger() :
-    _run{ false }
+Logger::Logger()
 {
 
 }
@@ -37,20 +36,12 @@ Logger::~Logger()
 
 void Logger::open()
 {
-    _run = true;
-    _writeThread = std::thread{ std::bind(&Logger::writeProc, this) };
-    _writeThread.detach();
+    start();
 }
 
 void Logger::close()
 {
-    if (_run.load()) {
-        _run = false;
-        _waitMessages.notify_all();
-        if (_writeThread.joinable()) {
-            _writeThread.join();
-        }
-    }
+    stop();
 }
 
 void Logger::log(std::string_view message, Logger::LogLevel level)
@@ -91,32 +82,24 @@ void Logger::info(std::string_view message)
     log(message, LogLevel::Info);
 }
 
-void Logger::writeProc()
+bool Logger::wakeUpCondition()
 {
-    std::mutex mtx;
-    std::unique_lock uniq(mtx);
-    auto pred = [&]() -> bool { return !_mainQueue.empty(); };
+    return !_mainQueue.empty();
+}
 
-    while (_run.load())
+void Logger::backgroundProcess()
+{
     {
-        if (_waitMessages.wait_for(uniq, 1s, pred)) {
-            if (!_run.load()) {
-                break;
-            }
-        }
-        if (pred()) {
-            std::lock_guard lg_mainQueue(_mainQueueMtx);
-            _writeQueue.swap(_mainQueue);
-        } else {
-            continue;
-        }
-        while (!_writeQueue.empty()) {
-            auto msg = _writeQueue.front();
-            _writeQueue.pop();
-            std::cout << "[" << msg.timestamp->tm_hour << ":" << msg.timestamp->tm_min << ":" << msg.timestamp->tm_sec
-                << "[T:" << msg.threadId
-                << " [" << logLevelToString(msg.level) << "] " << msg.message << std::endl;
-            //delete msg.timestamp;
-        }
+        std::lock_guard lg_mainQueue(_mainQueueMtx);
+        _writeQueue.swap(_mainQueue);
+    }
+    while (!_writeQueue.empty()) {
+        auto msg = _writeQueue.front();
+        _writeQueue.pop();
+        std::cout << "[" << msg.timestamp->tm_hour << ":" << msg.timestamp->tm_min << ":" << msg.timestamp->tm_sec
+                  << "[T:" << msg.threadId
+                  << " [" << logLevelToString(msg.level) << "] " << msg.message << std::endl;
+        //TODO: check if needed
+        //delete msg.timestamp;
     }
 }

@@ -11,10 +11,11 @@
 #include <condition_variable>
 #include <atomic>
 #include <queue>
+#include "../threads/BackgroundService.h"
 
 namespace nesto {
 
-    class Logger
+    class Logger : public BackgroundService
     {
     public:
         enum class LogLevel
@@ -27,7 +28,7 @@ namespace nesto {
         };
 
         Logger();
-        virtual ~Logger();
+        ~Logger() override;
 
         void open();
         void close();
@@ -50,11 +51,13 @@ namespace nesto {
         };
         std::mutex _mainQueueMtx;
         std::queue<LogMessage> _mainQueue, _writeQueue;
-        std::condition_variable _waitMessages;
-        std::thread _writeThread;
-        std::atomic_bool _run;
 
         void writeProc();
+
+    protected:
+        bool wakeUpCondition() override;
+
+        void backgroundProcess() override;
     };
 
     static Logger log;
