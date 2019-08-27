@@ -2,10 +2,16 @@
 // Created by kir on 26.08.2019.
 //
 
+#include "../os.h"
 #include <functional>
 #include <sys/types.h>
+#ifdef NESTO_LINUX
 #include <sys/socket.h>
 #include <netinet/in.h>
+#endif
+#ifdef NESTO_WIN
+#include <winsock2.h>
+#endif
 #include <unistd.h>
 #include "TcpSocket.h"
 #include "../logs/Logger.h"

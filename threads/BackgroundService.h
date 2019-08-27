@@ -15,7 +15,7 @@ namespace nesto {
 
 /**
  * Abstract class for any background service.
- * Class creates a new thread for time-heavy operation and wait until thread will be awakened.
+ * Class creates a new thread for a periodic-time-heavy operation and wait until thread will be awakened to execute it.
  */
     class BackgroundService
     {

@@ -6,6 +6,7 @@
 #define NESTO_APPLICATIONCONFIGURATION_H
 
 #include "Configuration.h"
+#include "../../logs/Logger.h"
 
 namespace nesto {
 
@@ -31,6 +32,18 @@ private:
     ServerConfiguration _serverCfg;
 };
 
+class LogsConfiguration : public JsonSerializable
+{
+public:
+    void toJson(nlohmann::json &object) const override;
+
+    void fromJson(const nlohmann::json &object) override;
+
+private:
+    std::string _folder;
+    nesto::Logger::LogLevel _level;
+};
+
 class ApplicationConfiguration : public Configuration
 {
 public:
@@ -39,6 +52,10 @@ public:
 
     ~ApplicationConfiguration() override = default;
 
+    std::string_view getRootPath() const;
+
+    LogsConfiguration &getLogsConfiguration();
+
 private:
     void toJson(nlohmann::json &object) const override;
 
@@ -46,7 +63,8 @@ private:
 
 private:
     NetworkConfiguration _networkCfg;
-    std::string _rootPath, _logsFolder;
+    LogsConfiguration _logsCfg;
+    std::string _rootPath;
 };
 
 }

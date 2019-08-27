@@ -5,13 +5,14 @@
 #include <iostream>
 #include <chrono>
 #include <functional>
+#include <mem.h>
 #include "Logger.h"
 
 using namespace nesto;
 using namespace std::chrono_literals;
 using namespace std::string_literals;
 
-inline const char *logLevelToString(Logger::LogLevel level)
+inline const char *Logger::logLevelToString(Logger::LogLevel level)
 {
     switch (level)
     {
@@ -20,11 +21,28 @@ inline const char *logLevelToString(Logger::LogLevel level)
         case Logger::LogLevel::Info: return "INFO";
         case Logger::LogLevel::Error: return "ERROR";
         case Logger::LogLevel::Warning: return "WARNING";
-        default: return "UNKNOWN";
+        default: throw std::invalid_argument("unknown logs level value.");
     }
 }
 
-Logger::Logger()
+Logger::LogLevel Logger::logLevelFromString(std::string_view level) {
+    if (!stricmp(level.data(), "trace")) {
+        return LogLevel::Trace;
+    } else if (!stricmp(level.data(), "debug")) {
+        return LogLevel::Debug;
+    } else if (!stricmp(level.data(), "info")) {
+        return LogLevel::Info;
+    } else if (!stricmp(level.data(), "error")) {
+        return LogLevel::Error;
+    } else if (!stricmp(level.data(), "warning")) {
+        return LogLevel::Warning;
+    } else {
+        throw std::invalid_argument("unknown logs level value: "s + level.data());
+    }
+}
+
+Logger::Logger() :
+    BackgroundService()
 {
 
 }
@@ -53,8 +71,11 @@ void Logger::log(std::string_view message, Logger::LogLevel level)
     auto now = time(nullptr);
     msg.timestamp = localtime(&now);
 
-    std::lock_guard lg(_mainQueueMtx);
-    _mainQueue.push(msg);
+    {
+        std::lock_guard lg(_mainQueueMtx);
+        _mainQueue.push(msg);
+    }
+    wakeUp();
 }
 
 void Logger::trace(std::string_view message)
@@ -103,3 +124,4 @@ void Logger::backgroundProcess()
         //delete msg.timestamp;
     }
 }
+

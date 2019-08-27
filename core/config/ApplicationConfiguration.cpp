@@ -17,14 +17,22 @@ void ApplicationConfiguration::toJson(nlohmann::json &object) const
 
     object["network"] = _networkCfg.toJsonObject();
     object["root"] = _rootPath;
-    object["log_dir"] = _logsFolder;
+    object["logs"] = _logsCfg.toJsonObject();
 }
 
 void ApplicationConfiguration::fromJson(const nlohmann::json &object)
 {
     _networkCfg.fromJson(object["network"]);
     _rootPath = object["root"];
-    _logsFolder = object["log_dir"];
+    _logsCfg.fromJson(object["logs"]);
+}
+
+std::string_view ApplicationConfiguration::getRootPath() const {
+    return _rootPath;
+}
+
+LogsConfiguration &ApplicationConfiguration::getLogsConfiguration() {
+    return _logsCfg;
 }
 
 void NetworkConfiguration::toJson(nlohmann::json &object) const
@@ -45,4 +53,15 @@ void ServerConfiguration::toJson(nlohmann::json &object) const
 void ServerConfiguration::fromJson(const nlohmann::json &object)
 {
     _port = object["port"];
+}
+
+void LogsConfiguration::toJson(nlohmann::json &object) const {
+    object["folder"] = _folder;
+    object["level"] = Logger::logLevelToString(_level);
+}
+
+void LogsConfiguration::fromJson(const nlohmann::json &object) {
+    _folder = object["folder"];
+    std::string levelName = object["level"];
+    _level = Logger::logLevelFromString(levelName);
 }

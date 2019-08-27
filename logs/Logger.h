@@ -41,6 +41,9 @@ namespace nesto {
         void error(std::string_view message);
         void info(std::string_view message);
 
+        static const char *logLevelToString(Logger::LogLevel level);
+        static Logger::LogLevel logLevelFromString(std::string_view level);
+
     private:
         struct LogMessage
         {

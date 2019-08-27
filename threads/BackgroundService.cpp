@@ -46,8 +46,10 @@ void BackgroundService::internalProc()
 {
     std::mutex mtx;
     std::unique_lock uniq(mtx);
+
+    auto predicate = std::bind(&BackgroundService::wakeUpCondition, this);
     while (_run.load()) {
-        if (_wakeUpConditionVar.wait_for(uniq, 1s, [&]() -> bool { return wakeUpCondition(); })) {
+        if (_wakeUpConditionVar.wait_for(uniq, 1s, predicate)) {
             if (!_run.load()) {
                 break;
             }
