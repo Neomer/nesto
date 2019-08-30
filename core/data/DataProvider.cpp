@@ -7,11 +7,14 @@
 
 using namespace nesto;
 using namespace std;
+using namespace string_literals;
 
-DataProvider::DataProvider(std::filesystem::path rootPath) :
-    _rootPath{ rootPath }
+DataProvider::DataProvider(std::filesystem::path rootPath, Logger &logger) :
+    _rootPath{ rootPath },
+    _logger{ logger },
+    _indexFile{ nullptr }
 {
-
+    
 }
 
 DataProvider::~DataProvider() {
@@ -19,6 +22,7 @@ DataProvider::~DataProvider() {
 }
 
 std::future<void> DataProvider::initialize() {
+    _logger.debug("run data provider initialization task.");
     return std::async(std::launch::async, [&]() -> void {
         initializeRootDirectory();
         initializeDataContainer();
@@ -26,18 +30,27 @@ std::future<void> DataProvider::initialize() {
 }
 
 void DataProvider::initializeRootDirectory() {
-    nesto::log.debug("check if root directory exists.");
+    _logger.debug("check if root directory exists.");
+    if (_rootPath.empty()) {
+        throw runtime_error("root directory isn't set. Check your configuration file.");
+    }
     if (!filesystem::exists(_rootPath)) {
-        nesto::log.debug("root directory is not created. Trying to create it...");
+        _logger.debug("root directory is not created. Trying to create it...");
         if (!filesystem::create_directories(_rootPath)) {
             throw std::runtime_error("root directory creation failed.");
         }
-        nesto::log.debug("root directory is created.");
+        _logger.debug("root directory is created.");
     }
-    nesto::log.debug("root directory is ready.");
+    _logger.debug("root directory is ready.");
+
+    _logger.debug("loading index file.");
+    auto indexPath = _rootPath / ".index";
+    _indexFile = new IndexFile(indexPath, _logger);
+    _logger.debug("index file ready.");
+
 }
 
 void DataProvider::initializeDataContainer() {
-    nesto::log.debug("start to initialize data container.");
-    nesto::log.debug("data container is ready.");
+    _logger.debug("start to initialize data container.");
+    _logger.debug("data container is ready.");
 }

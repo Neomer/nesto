@@ -117,8 +117,8 @@ void Logger::backgroundProcess()
     while (!_writeQueue.empty()) {
         auto msg = _writeQueue.front();
         _writeQueue.pop();
-        std::cout << "[" << msg.timestamp->tm_hour << ":" << msg.timestamp->tm_min << ":" << msg.timestamp->tm_sec
-                  << "[T:" << msg.threadId
+        std::cout << "[" << msg.timestamp->tm_hour << ":" << msg.timestamp->tm_min << ":" << msg.timestamp->tm_sec << "] "
+                  << "[T:" << msg.threadId << "]"
                   << " [" << logLevelToString(msg.level) << "] " << msg.message << std::endl;
         //TODO: check if needed
         //delete msg.timestamp;

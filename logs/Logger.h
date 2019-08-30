@@ -55,17 +55,11 @@ namespace nesto {
         std::mutex _mainQueueMtx;
         std::queue<LogMessage> _mainQueue, _writeQueue;
 
-        void writeProc();
-
     protected:
         bool wakeUpCondition() override;
 
         void backgroundProcess() override;
     };
-
-    static Logger log;
-
 }
-
 
 #endif //NESTO_LOGGER_H

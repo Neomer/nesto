@@ -8,13 +8,16 @@
 #include <string_view>
 #include <filesystem>
 #include <future>
+#include "models/IndexFile.h"
 
 namespace nesto {
+
+    extern Logger *log;
 
     class DataProvider
     {
     public:
-        explicit DataProvider(std::filesystem::path rootPath);
+        explicit DataProvider(std::filesystem::path rootPath, Logger &logger);
 
         ~DataProvider();
 
@@ -25,6 +28,9 @@ namespace nesto {
         void initializeDataContainer();
 
         std::filesystem::path _rootPath;
+        Logger &_logger;
+
+        IndexFile *_indexFile;
     };
 
 }

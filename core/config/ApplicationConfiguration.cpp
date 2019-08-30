@@ -14,7 +14,6 @@ ApplicationConfiguration::ApplicationConfiguration(const std::string_view &filen
 
 void ApplicationConfiguration::toJson(nlohmann::json &object) const
 {
-
     object["network"] = _networkCfg.toJsonObject();
     object["root"] = _rootPath;
     object["logs"] = _logsCfg.toJsonObject();
