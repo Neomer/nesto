@@ -13,3 +13,8 @@ StoredFile::StoredFile() {
 StoredFile::~StoredFile() {
 
 }
+
+std::iostream &StoredFile::stream()
+{
+
+}

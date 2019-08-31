@@ -30,6 +30,7 @@ void Configuration::save()
     ofstream stream(_filename, ios::out);
     stream << toJsonObject();
     stream.close();
+
 }
 
 void Configuration::reload()

@@ -2,10 +2,17 @@
 // Created by kir on 25.08.2019.
 //
 
+#include "../os.h"
 #include <iostream>
 #include <chrono>
 #include <functional>
+#ifdef NESTO_LINUX
+#include <strings.h>
+#define CASE_INSENSITIVE_COMPARE  strcasecmp
+#else
 #include <mem.h>
+#define CASE_INSENSITIVE_COMPARE  stricmp
+#endif
 #include "Logger.h"
 
 using namespace nesto;
@@ -26,15 +33,15 @@ inline const char *Logger::logLevelToString(Logger::LogLevel level)
 }
 
 Logger::LogLevel Logger::logLevelFromString(std::string_view level) {
-    if (!stricmp(level.data(), "trace")) {
+    if (!CASE_INSENSITIVE_COMPARE(level.data(), "trace")) {
         return LogLevel::Trace;
-    } else if (!stricmp(level.data(), "debug")) {
+    } else if (!CASE_INSENSITIVE_COMPARE(level.data(), "debug")) {
         return LogLevel::Debug;
-    } else if (!stricmp(level.data(), "info")) {
+    } else if (!CASE_INSENSITIVE_COMPARE(level.data(), "info")) {
         return LogLevel::Info;
-    } else if (!stricmp(level.data(), "error")) {
+    } else if (!CASE_INSENSITIVE_COMPARE(level.data(), "error")) {
         return LogLevel::Error;
-    } else if (!stricmp(level.data(), "warning")) {
+    } else if (!CASE_INSENSITIVE_COMPARE(level.data(), "warning")) {
         return LogLevel::Warning;
     } else {
         throw std::invalid_argument("unknown logs level value: "s + level.data());

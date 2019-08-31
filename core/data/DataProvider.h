@@ -5,10 +5,11 @@
 #ifndef NESTO_DATAPROVIDER_H
 #define NESTO_DATAPROVIDER_H
 
+#include "../../os.h"
 #include <string_view>
-#include <filesystem>
 #include <future>
 #include "models/IndexFile.h"
+#include "models/StoredFile.h"
 
 namespace nesto {
 
@@ -22,6 +23,8 @@ namespace nesto {
         ~DataProvider();
 
         std::future<void> initialize();
+
+        StoredFile &load(std::string_view name);
 
     private:
         void initializeRootDirectory();

@@ -9,18 +9,16 @@ using namespace nesto;
 using namespace std;
 
 IndexFile::IndexFile(filesystem::path &filename, Logger &logger) :
-    fstream{ },
     _logger{ logger }
 {
     if (!filesystem::exists(filename))
     {
         createIndexFile(filename);
     }
-    open(filename.string());
 }
 
 IndexFile::~IndexFile() {
-    close();
+
 }
 
 ostream &nesto::operator<<(ostream &os, const IndexFile::Version &version) {
@@ -40,4 +38,9 @@ void IndexFile::createIndexFile(filesystem::path &filename) {
     stream << "NST" << version;
     stream.close();
     _logger.debug("index file created.");
+}
+
+const IndexFile::Version &IndexFile::version() const
+{
+    return _indexFileVersion;
 }

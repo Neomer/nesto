@@ -5,12 +5,16 @@
 #ifndef NESTO_STOREDFILE_H
 #define NESTO_STOREDFILE_H
 
+#include <iostream>
+
 namespace nesto {
 
     class StoredFile {
     public:
         StoredFile();
         ~StoredFile();
+
+        std::iostream &stream();
     };
 
 }

@@ -13,7 +13,7 @@
 
 namespace nesto {
 
-    class IndexFile : public std::fstream {
+    class IndexFile {
     public:
         struct Version
         {
@@ -26,7 +26,9 @@ namespace nesto {
         };
 
         explicit IndexFile(std::filesystem::path &filename, Logger &logger);
-        ~IndexFile() override;
+        ~IndexFile();
+
+        [[nodiscard]] const Version &version() const;
 
     private:
         void createIndexFile(std::filesystem::path &filename);

@@ -1,11 +1,20 @@
 #include "logs/LogProvider.h"
 #include "core/config/ApplicationConfiguration.h"
 #include "core/data/DataProvider.h"
+#include "core/data/SeparatelyStoredFileStream.h"
 
+using namespace std;
 using namespace nesto;
 
 int main()
 {
+    const char *dd = "put to the file";
+
+    SeparatelyStoredFileStream stream("test.txt");
+    if (!stream) {
+        cout << "stream is closed." << std::endl;
+        return -1;
+    }
 
     ApplicationConfiguration cfg("app.config");
     cfg.reload();

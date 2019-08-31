@@ -10,11 +10,11 @@
 
 namespace nesto {
 
-    class SeparatelyStoredFileStream : public std::ifstream {
+class SeparatelyStoredFileStream : public std::fstream {
     public:
-        SeparatelyStoredFileStream(std::string_view mapFileName);
+        explicit SeparatelyStoredFileStream(std::string_view mapFileName);
 
-        ~SeparatelyStoredFileStream();
+        ~SeparatelyStoredFileStream() override;
     };
 
 }
